@@ -25,7 +25,6 @@ driverCount = winners.loc[winners.Year == 2021].groupby('driver').count()
 winnersTable = pd.crosstab(winners['driver'],
                            winners['Place'],
                            margins=False)
-import matplotlib.pyplot as plt
 uraces2021 = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/races2021.json'
 races2021 = pd.read_json(uraces2021)
 import re
