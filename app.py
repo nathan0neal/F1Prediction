@@ -13,28 +13,29 @@ setup()
 app = dash.Dash(__name__)
 server = app.server
 
-winners = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/results2021.json")
-winners
+uwin = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/races2021-2.json'
+
+winners = pd.read_json(uwin)
+# winners = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/results2021.json")
 winners.Place.values[0]
 winners["Place"] = winners["Place"].str.extract(r"([^(\\\n)]*)")
-winners
 winners.count()
 winners.groupby('driver').count()
 driverCount = winners.loc[winners.Year == 2021].groupby('driver').count()
 winnersTable = pd.crosstab(winners['driver'],
                            winners['Place'],
                            margins=False)
-winnersTable
 import matplotlib.pyplot as plt
-races2021 = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/races2021.json")
+uraces2021 = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/races2021.json'
+races2021 = pd.read_json(uraces2021)
 import re
 
 name = []
 for i in range(len(races2021)):
     name.append(re.findall(r"(FORMULA.*?2021)", races2021.place.values[i][0]))
 races2021.place = name[:]
-races2021
-races = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/races2021-2.json")
+races = pd.read_json(uwin)
+# races = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/races2021-2.json")
 name2 = []
 for i in range(len(races)):
     name2.append(re.findall(r"(FORMULA.*?2021)", races.circuit.values[i][0]))
@@ -60,8 +61,9 @@ driverList = races.driver.unique().tolist()
 def MA(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
 
-
-racesGen = pd.read_json('/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/racesGen.json')
+uracesGen = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/racesGen.json'
+racesGen = pd.read_json(uracesGen)
+# racesGen = pd.read_json('/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/racesGen.json')
 nameGen = []
 for i in range(len(racesGen)):
     nameGen.append(re.findall(r"(?=FORMULA|\d)(.*)(?<=PRIX|\d{4})", racesGen.circuit.values[i][0]))
@@ -75,11 +77,14 @@ for i in range(len(racesGen.circuit)):
     CircuitGen.append(racesGen.circuit.iloc[i][0])
 racesGen.circuit = CircuitGen[:]
 racesGen = racesGen.sort_values(['Race Rank', 'position'], ascending=[True, True])
-
-teamRanks = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/teamsRank.json")
+uteamRanks = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/teamsRank.json'
+teamRanks = pd.read_json(uteamRanks)
+# teamRanks = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/teamsRank.json")
 teamRanks.position = pd.to_numeric(teamRanks['position'], errors = 'coerce',downcast='signed')
 ###WEATHER INFO
-weather  = pd.read_json('/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/f1Results/raceWeather.json')
+uweather = 'https://raw.githubusercontent.com/nathan0neal/F1Prediction/master/f1Results/raceWeather.json'
+weather = pd.read_json(uweather)
+# weather  = pd.read_json('/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/f1Results/raceWeather.json')
 
 nameGen2 = []
 for i in range(len(racesGen)):
