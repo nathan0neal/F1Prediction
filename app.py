@@ -10,6 +10,8 @@ from crochet import setup
 import dash
 setup()
 app = dash.Dash(__name__)
+server = app.server
+
 winners = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/results2021.json")
 winners
 winners.Place.values[0]
