@@ -4,6 +4,7 @@ from dash import dcc, html
 from dash.dependencies import Input, Output
 from dash import callback_context
 from dash import dash_table as dt
+from plotly.validator_cache import ValidatorCache
 import numpy as np
 import pandas as pd
 from crochet import setup
@@ -52,11 +53,9 @@ name2 = []
 for i in range(len(races)):
     name2.append(re.findall(r"(FORMULA.*?2021)", races.circuit.values[i][0]))
 
-for i in range(len(races.position)):
-    if races.position[i] == "NC":
-        races.position[i] = 30
-    if races.position[i] == "DQ":
-        races.position[i] = 40
+races.loc[races['position'] == 'NC', 'position'] = 30
+races.loc[races['position'] == 'DQ', 'position'] = 40
+
 races.circuit = name2[:]
 
 races.position = races["position"].astype('int32')
@@ -65,56 +64,25 @@ for i in range(len(races.circuit)):
     Circuit.append(races.circuit.iloc[i][0])
 races.circuit = Circuit[:]
 races = races.sort_values(['Race Rank', 'position'], ascending=[True, True])
-races
 bahrain = races.loc[races['circuit'] == 'FORMULA 1 GULF AIR BAHRAIN GRAND PRIX 2021']
 races.sort_values(["driver", 'Race Rank'])
 cum_results = races.drop(['driver', 'time', 'team_name', 'Place', 'circuit'], axis=1).cumsum(axis=1)
 type(races.position[0])
-cum_results
 racesList = races.circuit.unique().tolist()
 driverList = races.driver.unique().tolist()
-plt.figure(figsize=(10, 8))
-for pilote in driverList:
-    plt.plot(np.cumsum(races.loc[(races.driver == pilote), 'points'].values.tolist()), label=pilote)
-plt.legend()
-
 
 def MA(x, w):
     return np.convolve(x, np.ones(w), 'valid') / w
 
 
-plt.figure(figsize=(10, 8))
-for pilote in driverList:
-    plt.plot(MA(races.loc[(races.driver == pilote), 'points'], 3), label=pilote)
-plt.title("Moyenne mobile -3 des points/pilotes")
-plt.legend()
-races[(races.position != 30) & (races.position != 40)].groupby('driver').mean().drop(
-    columns=['Year', 'Race Rank']).sort_values("position")
-
-races[(races.position != 30) & (races.position != 40)].groupby('driver').mean().drop(
-    columns=['Year', 'Race Rank']).sort_values("points", ascending=False)
-#on enleve les 30 et 40 (dsq and DNF)
-races.groupby('driver').sum().drop(columns=["Race Rank", "position", "No", "Year", "laps"]).sort_values("points",
-                                                                                                        ascending=False)
-tabDNF = races[(races.position == 30) | (races.position == 40)].value_counts("driver").append(pd.Series({"Sainz": 0}))
-
-plt.figure(figsize=(24, 8))
-plt.bar(tabDNF.index, height=tabDNF)
-plt.title('Nombre de DNF en 2021')
-plt.ylabel('Nombre de DNF')
-plt.xlabel('Pilotes')
-plt.grid()
 racesGen = pd.read_json('/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/racesGen.json')
 nameGen = []
 for i in range(len(racesGen)):
     nameGen.append(re.findall(r"(?=FORMULA|\d)(.*)(?<=PRIX|\d{4})", racesGen.circuit.values[i][0]))
 
 racesGen.circuit = nameGen[:]
-for i in range(len(racesGen.position)):
-    if racesGen.position[i] == "NC":
-        racesGen.position[i] = 30
-    if racesGen.position[i] == "DQ":
-        racesGen.position[i] = 40
+racesGen.loc[racesGen['position'] == 'NC', 'position'] = 30
+racesGen.loc[racesGen['position'] == 'DQ', 'position'] = 40
 racesGen.position = racesGen["position"].astype('int32')
 CircuitGen = []
 for i in range(len(racesGen.circuit)):
