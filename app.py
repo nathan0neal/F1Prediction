@@ -26,20 +26,6 @@ winnersTable = pd.crosstab(winners['driver'],
                            margins=False)
 winnersTable
 import matplotlib.pyplot as plt
-
-plt.bar(driverCount.index.values, driverCount['laps'].values, width=0.4)
-plt.title("Nombre de victoire en 2021")
-plt.xlabel("Pilotes")
-plt.ylabel("Nombre de victoire")
-plt.grid()
-plt.show()
-driverCount20 = winners.loc[winners.Year == 2020].groupby('driver').count()
-plt.bar(driverCount20.index.values, driverCount20['laps'].values, width=0.4)
-plt.title("Nombre de victoire en 2020")
-plt.xlabel("Pilotes")
-plt.ylabel("Nombre de victoire")
-plt.grid()
-plt.show()
 races2021 = pd.read_json("/Users/nbouret/Documents/DataspellProjects/DataspellProjects/f1Results/races2021.json")
 import re
 
